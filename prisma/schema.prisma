@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN 
+  USER
+}
+
+model User {
+  id                  Int             @id @default(autoincrement())
+  username            String
+  hashPassword        String
+  salt                String
+  email               String          @unique()
+  role                Role            @default(USER)
+  Recipes             Recipe[]
+  RefreshToken        RefreshToken?
+  RecipesLikes        RecipeLike[]
+  activationLink      String          @unique()
+  isActivated         Boolean         @default(false)
+}
+
+model Type {
+   id                 Int           @id @default(autoincrement())
+   name               String        @unique()
+   recipes            Recipe[]
+}
+
+model NationalCuisine {
+   id                  Int           @id @default(autoincrement())
+   name                String         @unique()
+   recipes             Recipe[]
+}
+
+
+model Holiday {
+   id                  Int            @id @default(autoincrement())
+   name                String         @unique()
+   recipes             Recipe[]
+}
+
+model Recipe {
+  id                   Int                @id @default(autoincrement())
+  title                String
+  description          String
+  author               User               @relation(fields: [authorId], references: [id])
+  authorId             Int
+  isRejected           Boolean         @default(false)
+  isChecked            Boolean         @default(false)
+  typeId               Int
+  holidayId            Int
+  nationalCuisineId    Int
+  holiday              Holiday         @relation(fields: [holidayId], references: [id])
+  nationalCuisine      NationalCuisine @relation(fields: [nationalCuisineId], references: [id])
+  type                 Type            @relation(fields: [typeId], references: [id])
+  Ingredients          Ingredient[]
+  Steps                Step[]
+  RecipesLikes         RecipeLike[]
+  img                  String
+}
+
+model RecipeLike {
+      id               Int                 @id @default(autoincrement())
+      recipeId         Int
+      recipe           Recipe              @relation(fields: [recipeId],references: [id])
+      userId           Int
+      user             User                @relation(fields: [userId],references: [id])
+}
+
+model RefreshToken {
+  id                   Int                 @id @default(autoincrement())
+  user                 User                @relation(fields: [userId], references: [id])
+  token                String              
+  userId               Int                 @unique
+}
+
+model Ingredient {
+  id                   Int                 @id @default(autoincrement())
+  name                 String
+  recipeId             Int
+  recipe               Recipe              @relation(fields: [recipeId],references: [id])
+}
+
+model Step {
+  id                   Int                  @id @default(autoincrement())
+  name                 String
+  recipeId             Int
+  recipe               Recipe               @relation(fields: [recipeId],references: [id])
+}
