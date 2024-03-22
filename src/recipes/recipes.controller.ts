@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Logger,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   Req,
@@ -11,7 +13,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateRecipeDto, QueryParamsGetRecipes } from './dto';
+import {
+  CreateRecipeDto,
+  QueryParamsGetOwnRecipes,
+  QueryParamsGetRecipes,
+} from './dto';
 import { AccessTokenJwt } from 'src/auth/guards/AccessTokenJwt.guard';
 import { RecipesService } from './recipes.service';
 import * as path from 'path';
@@ -58,10 +64,19 @@ export class RecipesController {
     return recipesData;
   }
 
-  @Get('ownRecipes')
+  @Get('liked/:id')
+  async getLikedRecipes(@Query() query, @Param('id', ParseIntPipe) id) {
+    const recipes = await this.recipeService.getLikedRecipesByUserId(
+      id,
+      query.page,
+      query.search,
+    );
+  }
+
   @UseGuards(AccessTokenJwt)
+  @Get('ownRecipes')
   async getOwnRecipes(
-    @Query() queryParams: QueryParamsGetRecipes,
+    @Query() queryParams: QueryParamsGetOwnRecipes,
     @Req() { user },
   ) {
     const recipesData = await this.recipeService.getUserRecipes(
@@ -71,4 +86,17 @@ export class RecipesController {
 
     return recipesData;
   }
+
+  @Get('/:id')
+  async getRecipe(@Param('id', ParseIntPipe) id: number) {
+    const recipe = await this.recipeService.findRecipeById(id);
+
+    return recipe;
+  }
+
+  @Get('additionalInformation')
+  async getAdditionalInformation(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any,
+  ) {}
 }

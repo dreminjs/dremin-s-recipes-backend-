@@ -8,8 +8,6 @@ export class PasswordService {
   }
 
   async comparePassword(password: string, hashPassword: string) {
-    console.log(password, hashPassword);
-
     return await bcrypt.compare(password, hashPassword);
   }
 }

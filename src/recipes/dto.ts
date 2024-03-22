@@ -14,11 +14,17 @@ export class CreateRecipeDto {
 
 export class QueryParamsGetRecipes {
   search?: string;
-  page: string;
+  page?: string;
   // steps: JSON;
   // ingredients: JSON;
   typeId?: string | string[];
   nationalCuisineId?: string | string[];
   holidayId?: string | string[];
   orderBy?: 'asc' | 'desc';
+}
+
+export class QueryParamsGetOwnRecipes extends QueryParamsGetRecipes {
+  isRejected: string;
+  isChecked: string;
+  likedRecipes: boolean;
 }

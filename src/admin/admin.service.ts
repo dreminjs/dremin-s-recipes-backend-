@@ -15,7 +15,7 @@ export class AdminService {
       },
     });
 
-    return user.role === 'ADMIN' && true;
+    return user.role === 'ADMIN';
   }
 
   async createType(body: CharacteristicDto) {
@@ -43,8 +43,6 @@ export class AdminService {
   }
 
   async editType(name: string, id: number) {
-    this.logger.log(name);
-
     const type = await this.prismaService.type.update({
       where: {
         id,
@@ -53,8 +51,6 @@ export class AdminService {
         name,
       },
     });
-
-    this.logger.log(type);
 
     if (!type) {
       throw new NotFoundException('такого типа нет!');

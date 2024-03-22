@@ -65,8 +65,8 @@ model Recipe {
   holiday              Holiday         @relation(fields: [holidayId], references: [id])
   nationalCuisine      NationalCuisine @relation(fields: [nationalCuisineId], references: [id])
   type                 Type            @relation(fields: [typeId], references: [id])
-  Ingredients          Ingredient[]
-  Steps                Step[]
+  ingredients          Ingredient[]
+  steps                Step[]
   RecipesLikes         RecipeLike[]
   img                  String
 }

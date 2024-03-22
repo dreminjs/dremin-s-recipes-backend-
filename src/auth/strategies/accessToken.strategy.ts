@@ -31,10 +31,8 @@ export class AccessTokenStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    const { email } = payload;
+    const user = await this.userService.findUserByEmail(payload);
 
-    const user = await this.userService.findUserByEmail(email);
-
-    return { email, userId: user.id };
+    return { email: payload, userId: user.id };
   }
 }

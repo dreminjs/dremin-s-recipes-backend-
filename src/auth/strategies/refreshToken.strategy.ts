@@ -32,10 +32,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    this.logger.log(payload, 'PAYLOAD');
-
     const user = await this.userService.findUserByEmail(payload);
 
-    return { email: payload, userId: user.id };
+    return { email: payload, userId: user.id, isActivated: user.isActivated };
   }
 }

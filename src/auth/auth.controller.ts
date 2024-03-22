@@ -81,9 +81,7 @@ export class AuthController {
   @Get('refresh')
   @UseGuards(RefreshTokenJwt)
   async refresh(@Req() req, @Res({ passthrough: true }) res) {
-    const { userId, email } = req.user;
-
-    this.logger.log(userId, 'HIT REFRESH');
+    const { userId, email, isActivated } = req.user;
 
     await this.tokenService.removeToken(userId);
 
@@ -99,7 +97,7 @@ export class AuthController {
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
-    return { authStatus: true, adminStatus: isAdmin };
+    return { isAuth: true, isAdmin, isActivated };
   }
 
   @Post('logout')
