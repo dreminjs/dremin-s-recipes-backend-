@@ -21,6 +21,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AccessTokenJwt } from './guards/AccessTokenJwt.guard';
 import { RefreshTokenJwt } from './guards/RefreshTokenJwt.guard';
 import { AdminService } from 'src/admin/admin.service';
+import { EMailService } from 'src/mail/email.service';
 
 @Controller('auth')
 export class AuthController {
@@ -31,16 +32,17 @@ export class AuthController {
     private readonly tokenService: TokenService,
     private readonly userService: UserService,
     private readonly adminService: AdminService,
+    private readonly mailService: EMailService,
   ) {}
 
   @UseGuards(SingUpGuard)
   @Post('signup')
   async signup(@Body() body: SignUpDto, @Res({ passthrough: true }) res) {
-    this.logger.log('HIT');
-
-    const user: any = await this.authService.signUp(body);
+    const user = await this.authService.signUp(body);
 
     const tokens = await this.tokenService.generateTokens(user.email, user.id);
+
+    await this.mailService.sendMail(body.email, user.activationLink);
 
     res.cookie('accessToken', tokens.accessToken, {
       maxAge: 24 * 60 * 60 * 1000,
@@ -122,9 +124,14 @@ export class AuthController {
   }
 
   @Get('confirmAccount/:link')
-  async confirmAccount(@Param('link') link: string) {
-    const res = await this.authService.confirmAccount(link);
+  async confirmAccount(
+    @Param('link') link: string,
+    @Res({ passthrough: true }) res,
+  ) {
+    await this.authService.confirmAccount(link);
+    res.set('Content-Type', 'text/html');
 
-    return res;
+    this.logger.log(__dirname);
+    return '<h1>Вы упешно подтвердили свой email!</h1>';
   }
 }

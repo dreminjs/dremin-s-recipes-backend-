@@ -12,4 +12,36 @@ export class UserService {
 
     return user;
   }
+
+  async findUserByRefreshToken(token: string) {
+    const user = await this.prismaService.refreshToken.findFirst({
+      where: { token },
+    });
+
+    return user;
+  }
+
+  async findUserById(id: number) {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    return user;
+  }
+
+  async checkOwnerProfile(profileId: number, userId: number) {
+    const userProfile = await this.prismaService.user.findFirst({
+      where: { id: profileId },
+    });
+
+    const user = await this.prismaService.user.findFirst({
+      where: { id: userId },
+    });
+
+    this.logger.log(profileId, userId);
+
+    return { isMineProfile: userProfile.id == user.id };
+  }
 }

@@ -11,6 +11,7 @@ import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 
 import { AdminModule } from 'src/admin/admin.module';
+import { EMailModule } from 'src/mail/email.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AdminModule } from 'src/admin/admin.module';
     PrismaModule,
     ConfigModule.forRoot(),
     AdminModule,
+    EMailModule,
   ],
   controllers: [AuthController],
   providers: [

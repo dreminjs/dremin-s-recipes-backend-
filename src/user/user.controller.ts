@@ -1,6 +1,15 @@
-import { Controller, Get, Logger, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Logger,
+  Param,
+  ParseIntPipe,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AccessTokenJwt } from 'src/auth/guards/AccessTokenJwt.guard';
 import { UserService } from './user.service';
+import { User } from './decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -10,7 +19,21 @@ export class UserController {
 
   @Get('')
   @UseGuards(AccessTokenJwt)
-  async getCurrentUserInfo(@Req() { user }) {
-    return await this.userService.findUserByEmail(user.email);
+  async getCurrentUserInfo(@User() { email }) {
+    return await this.userService.findUserByEmail(email);
+  }
+
+  @Get('/:id')
+  async getOtherUserInfo(@Param('id', ParseIntPipe) id: number) {
+    return await this.userService.findUserById(id);
+  }
+
+  @Get('checkOwnerProfile/:id')
+  @UseGuards(AccessTokenJwt)
+  async checkOwnerProfile(
+    @Param('id', ParseIntPipe) profileId: number,
+    @User() { userId },
+  ) {
+    return { isItMineProfile: profileId === userId };
   }
 }

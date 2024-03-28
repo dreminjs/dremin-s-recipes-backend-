@@ -42,7 +42,6 @@ export class CharacteristicsService {
   }
 
   async getNationalCuisines(body: CharacteristicsQueryParamsDto) {
-    this.logger.log('HERE');
     let prismaOptions: any = {
       take: 5,
       skip: (body.page - 1) * 5,

@@ -73,7 +73,7 @@ model Recipe {
 
 model RecipeLike {
       id               Int                 @id @default(autoincrement())
-      recipeId         Int
+      recipeId         Int                 
       recipe           Recipe              @relation(fields: [recipeId],references: [id])
       userId           Int
       user             User                @relation(fields: [userId],references: [id])
@@ -89,6 +89,7 @@ model RefreshToken {
 model Ingredient {
   id                   Int                 @id @default(autoincrement())
   name                 String
+  isVisible           Boolean              @default(false)
   recipeId             Int
   recipe               Recipe              @relation(fields: [recipeId],references: [id])
 }
@@ -96,6 +97,7 @@ model Ingredient {
 model Step {
   id                   Int                  @id @default(autoincrement())
   name                 String
+  isVisible            Boolean              @default(false)
   recipeId             Int
   recipe               Recipe               @relation(fields: [recipeId],references: [id])
 }

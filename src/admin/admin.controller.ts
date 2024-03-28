@@ -4,6 +4,7 @@ import {
   Logger,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -64,5 +65,17 @@ export class AdminController {
     @Body() body: CharacteristicDto,
   ) {
     return await this.adminService.editNationalCuisine(body.name, id);
+  }
+
+  @Patch('checkRecipe/:id')
+  async checkRecipe(@Param('id', ParseIntPipe) id: number) {
+    await this.adminService.checkRecipe(id);
+    return { message: 'success' };
+  }
+
+  @Patch('rejectRecipe/:id')
+  async rejectRecipe(@Param('id', ParseIntPipe) id: number) {
+    await this.adminService.rejectRecipe(id);
+    return { message: 'success' };
   }
 }

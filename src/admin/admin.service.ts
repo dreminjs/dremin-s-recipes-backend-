@@ -91,4 +91,23 @@ export class AdminService {
 
     return nationalCuisine;
   }
+
+  async rejectRecipe(id: number) {
+    await this.prismaService.recipe.update({
+      where: { id },
+      data: {
+        isChecked: false,
+        isRejected: true,
+      },
+    });
+  }
+  async checkRecipe(id: number) {
+    await this.prismaService.recipe.update({
+      where: { id },
+      data: {
+        isChecked: true,
+        isRejected: false,
+      },
+    });
+  }
 }
