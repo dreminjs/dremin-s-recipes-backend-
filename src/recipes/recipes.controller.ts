@@ -144,7 +144,7 @@ export class RecipesController {
   ) {
     const recipe = await this.recipeService.dislikeRecipe(id, userId);
 
-    return { isLiked: false };
+    return { isLiked: false,countLikes:0 };
   }
 
   @UseGuards(AccessTokenJwt)

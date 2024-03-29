@@ -371,7 +371,7 @@ export class RecipesService {
     });
 
     const countOfLikes = await this.prismaService.recipeLike.count({
-      where: { id },
+      where: { recipeId: id },
     });
 
     if (!recipe) {
@@ -389,17 +389,24 @@ export class RecipesService {
       },
     });
 
-    return recipe;
+    const countLikes = await this.prismaService.recipeLike.count({
+      where: { recipeId },
+    });
+
+    return { countLikes, isLiked: true };
   }
-  async dislikeRecipe(recipeId, userId) {
+  async dislikeRecipe(recipeId: number, userId: number) {
     const recipe = await this.prismaService.recipeLike.deleteMany({
       where: {
         recipeId,
         userId,
       },
     });
+    const countLikes = await this.prismaService.recipeLike.count({
+      where: { recipeId },
+    });
 
-    return recipe && { isLiked: false };
+    return { countLikes, isLiked: false };
   }
 
   async checkLike(recipeId: number, userId: number) {
@@ -410,7 +417,13 @@ export class RecipesService {
       },
     });
 
-    return recipe ? { isLiked: true } : { isLiked: false };
+    const countLikes = await this.prismaService.recipeLike.count({
+      where: { recipeId },
+    });
+
+    return recipe
+      ? { isLiked: true, countLikes }
+      : { isLiked: false, countLikes };
   }
 
   async deleteRecipe(recipeId: number) {
