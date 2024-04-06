@@ -20,8 +20,9 @@ export class UploadMiddleware implements MulterOptionsFactory {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
           const extension = file.originalname.split('.').pop();
           const filename = `${uuidv4()}-${uniqueSuffix}.${extension}`;
-
-          req.filename = filename;
+          if (file) {
+            req.filename = filename;
+          }
           cb(null, filename);
         },
       }),

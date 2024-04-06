@@ -92,8 +92,6 @@ export class RecipesService {
       where: { id: recipeId },
     });
 
-    unlinkSync(join('./static', img));
-
     const recipe = await this.prismaService.recipe.update({
       where: {
         id: recipeId,
@@ -143,6 +141,8 @@ export class RecipesService {
     await this.prismaService.ingredient.createMany({
       data: ingredientsInfo,
     });
+
+    unlink(join('./static', img), () => console.log(''));
 
     return recipe;
   }
