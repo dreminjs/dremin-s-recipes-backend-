@@ -1,4 +1,3 @@
-
 FROM node:20
 
 # Set the working directory in the container
@@ -8,15 +7,25 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install NestJS dependencies
-RUN npm i
+RUN npm install
 
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
+ENTRYPOINT ["./entrypoint.sh"]
 
-# Expose the port the app runs on
+# Make the entrypoint script executable
+# RUN chmod +x ./entrypoint.sh
 
-# Command to run the application
-CMD ["npm","run","start"]
+# Set the entrypoint and default command
+CMD ["npm", "run", "start:prod"]
+
+
+
+# RUN apt-get update && apt-get install -y netcat-openbsd
+
+# RUN apt-get update && apt-get install -y postgresql-client
+
+# Ожидание готовности базы данных и выполнение миграции
+
+# Use entrypoint.sh as the entrypoint for the container
