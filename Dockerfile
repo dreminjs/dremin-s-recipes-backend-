@@ -12,16 +12,9 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
-ENTRYPOINT ["./entrypoint.sh"]
+RUN chmod +x ./entrypoint.sh
 
-# Make the entrypoint script executable
-# RUN chmod +x ./entrypoint.sh
-
-# Set the entrypoint and default command
-CMD ["npm", "run", "start:prod"]
-
-
-
+ENTRYPOINT ["/entrypoint.sh"] 
 # RUN apt-get update && apt-get install -y netcat-openbsd
 
 # RUN apt-get update && apt-get install -y postgresql-client

@@ -28,4 +28,3 @@ import path, { join, resolve } from 'path';
 })
 export class EMailModule {}
 
-console.log(__dirname);
