@@ -6,9 +6,9 @@ COPY package*.json ./
 
 COPY prisma ./prisma/
 
-COPY entrypoint.sh /app/entrypoint.sh
-
 COPY . .
+
+RUN npm i
 
 RUN chmod +x /app/entrypoint.sh
 
