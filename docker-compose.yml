@@ -20,7 +20,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nest-docker-postgres
-    entrypoint: ['./entrypoint.sh']
+    env_file:
+      - .env
     environment:
       - PORT=${PORT}
     ports:
