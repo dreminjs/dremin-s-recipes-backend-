@@ -1,17 +1,28 @@
-FROM node:20
+FROM node:20 AS builder
 
+# Create app directory
 WORKDIR /app
 
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-
 COPY prisma ./prisma/
+
+# Install app dependencies
+RUN npm install
+
+RUN npx prisma generate
 
 COPY . .
 
-RUN npm i
+RUN npm run build
 
-RUN chmod +x /app/entrypoint.sh
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+FROM node:20
 
-CMD ["npm","run","start"]
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+
+EXPOSE 3000
+CMD [  "npm", "run", "start:migrate:prod" ]
