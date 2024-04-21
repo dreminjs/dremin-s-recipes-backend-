@@ -1,33 +1,30 @@
-version: '3.5'
-
+version: '3.8'
 services:
-  db:
-    image: postgres
-    restart: always
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_HOST=db
-    container_name: postgres
-    ports:
-      - '5432:5432'
-  app:
-    image: node
+  nest-api:
+    container_name: nest-api
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nest-docker-postgres
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
     env_file:
       - .env
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
     environment:
-      - PORT=${PORT}
+      - POSTGRES_PASSWORD=postgres
+    restart: always
     ports:
-      - '3000:3000'
-    depends_on:
-      - db
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
 
-
-
+volumes:
+  postgres:
+    name: nest-db
